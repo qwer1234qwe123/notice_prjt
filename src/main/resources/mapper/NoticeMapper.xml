@@ -5,8 +5,9 @@
 
 <mapper namespace="com.human.notice.repository.NoticeDAO">
 
-    <!-- 공지사항 목록 검색 쿼리 -->
-    <select id="searchNotices" resultType="NoticeVO">
+ 
+      <!-- 공지사항 목록 검색 쿼리 -->
+    <select id="searchNotices" parameterType="map" resultType="NoticeVO">
         SELECT * FROM tb_notice
         WHERE (n_category = #{category} OR #{category} IS NULL)
           AND (n_title LIKE CONCAT('%', #{title}, '%') OR #{title} IS NULL)
@@ -20,6 +21,7 @@
         VALUES (#{n_category}, #{n_title}, #{n_content}, #{n_status})
     </insert>
 	
+	<!-- 공지사항 목록 조회 쿼리 -->
 	<select id="getNotices" resultType="NoticeVO">
         SELECT n_idx, n_category, n_title, n_content, n_regdate
         FROM tb_notice

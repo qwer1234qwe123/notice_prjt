@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.human.notice.service.NoticeService;
 import com.human.notice.vo.NoticeVO;
@@ -27,25 +27,35 @@ public class NoticeController {
         return "redirect:/list";  // /notice/list로 리다이렉트
     }
 
-    // 공지사항 목록 페이지 매핑
+    // 공지사항 목록 페이지 매핑 (검색 포함)
     @GetMapping("/list")
-    public String noticeList(Model model) {
-        List<NoticeVO> notices = noticeServiceImpl.getNotices();  // 공지사항 목록 조회
-        model.addAttribute("notices", notices);  // 조회된 공지사항 목록을 Model에 추가
-        return "notice/notice_list";  // /WEB-INF/views/notice/notice_list.jsp로 이동
+    public String noticeList(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            Model model) {
+
+        // 검색 조건에 따라 공지사항 목록 조회
+        List<NoticeVO> notices = noticeServiceImpl.searchNotices(category, title, content);
+        model.addAttribute("notices", notices);
+        model.addAttribute("category", category);
+        model.addAttribute("title", title);
+        model.addAttribute("content", content);
+
+        return "notice/notice_list";  
     }
 
     // 공지사항 작성 폼 페이지로 이동
     @GetMapping("/write")
     public String writeForm() {
-        return "notice/notice_write";  // /WEB-INF/views/notice/notice_write.jsp로 이동
+        return "notice/notice_write";  
     }
 
     // 공지사항 작성 처리
     @PostMapping("/write")
     public String writeNotice(NoticeVO notice) {
-        noticeServiceImpl.addNotice(notice);  // 공지사항 추가
-        return "redirect:/list";  // 작성 후 목록 페이지로 리다이렉트
+        noticeServiceImpl.addNotice(notice);  
+        return "redirect:/list";  
     }
 
    
