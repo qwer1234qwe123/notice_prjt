@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.notice.repository.NoticeDAO">
+
+    <!-- 공지사항 목록 검색 쿼리 -->
+    <select id="searchNotices" resultType="NoticeVO">
+        SELECT * FROM tb_notice
+        WHERE (n_category = #{category} OR #{category} IS NULL)
+          AND (n_title LIKE CONCAT('%', #{title}, '%') OR #{title} IS NULL)
+          AND (n_content LIKE CONCAT('%', #{content}, '%') OR #{content} IS NULL)
+        ORDER BY n_regdate DESC
+    </select>
+
+    <!-- 공지사항 등록 쿼리 -->
+    <insert id="insertNotice">
+        INSERT INTO tb_notice (n_category, n_title, n_content, n_status)
+        VALUES (#{n_category}, #{n_title}, #{n_content}, #{n_status})
+    </insert>
+	
+	<select id="getNotices" resultType="NoticeVO">
+        SELECT n_idx, n_category, n_title, n_content, n_regdate
+        FROM tb_notice
+        ORDER BY n_regdate DESC
+    </select>
+    
+</mapper>
